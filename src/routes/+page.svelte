@@ -1,8 +1,48 @@
 <script lang="ts">
-  console.log("e");
+  import { FileDropzone } from "@skeletonlabs/skeleton";
+  import { frames, extractFrames, type Frame } from "$lib/gif";
+  import Timeline from "$lib/components/Timeline.svelte";
+  import Preview from "$lib/components/Preview.svelte";
+
+  let files: FileList;
+  let processing: boolean = false;
+
+  async function onChangeHandler(e: Event): Promise<void> {
+    console.log("files", files);
+    processing = true;
+    try {
+      frames.set(await extractFrames(files[0]));
+    } finally {
+      processing = false;
+    }
+  }
 </script>
 
 <div class="container mx-auto p-8 space-y-8">
-  <h1 class="h1">Svelte Page</h1>
-  <p>Placeholder Text</p>
+  <h1 class="h1">GIF Editor</h1>
+  <FileDropzone name="files" bind:files on:change={onChangeHandler}
+    >Upload</FileDropzone
+  >
+
+  {#if processing}
+    <section class="card w-full">
+      <div class="p-4 space-y-4">
+        <div class="placeholder" />
+        <div class="grid grid-cols-3 gap-8">
+          <div class="placeholder" />
+          <div class="placeholder" />
+          <div class="placeholder" />
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          <div class="placeholder" />
+          <div class="placeholder" />
+          <div class="placeholder" />
+          <div class="placeholder" />
+        </div>
+      </div>
+    </section>
+  {:else if files != null && files.length > 0}
+    <Preview source={files[0]} />
+    <Timeline />
+  {/if}
 </div>
