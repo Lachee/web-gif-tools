@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { FileDropzone } from "@skeletonlabs/skeleton";
+  import { FileDropzone, toastStore } from "@skeletonlabs/skeleton";
   import { frames, extractFrames, type Frame } from "$lib/gif";
   import Timeline from "$lib/components/Timeline.svelte";
   import Preview from "$lib/components/Preview.svelte";
+
+  const frameLimit = 200;
 
   let files: FileList;
   let processing: boolean = false;
@@ -11,7 +13,14 @@
     console.log("files", files);
     processing = true;
     try {
-      frames.set(await extractFrames(files[0]));
+      const f = await extractFrames(files[0]);
+      if (f.length > frameLimit) {
+        toastStore.trigger({
+          message: `Content is too big! It exceeds ${frameLimit} frames`,
+        });
+      } else {
+        frames.set(f);
+      }
     } finally {
       processing = false;
     }

@@ -9,12 +9,13 @@
   // Finally, your application's global stylesheet (sometimes labeled 'app.css')
   import "../app.postcss";
   import { AppShell, Toast } from "@skeletonlabs/skeleton";
+  // <slot />
+  // <svelte:fragment slot="pageFooter"
+  //   ><div class="p-4">🏳️‍⚧️ Created by Lachee in 2023</div></svelte:fragment
+  // >
 </script>
 
 <Toast />
 <AppShell>
   <slot />
-  <svelte:fragment slot="pageFooter"
-    ><div class="p-4">🏳️‍⚧️ Created by Lachee in 2023</div></svelte:fragment
-  >
 </AppShell>

@@ -23,9 +23,9 @@ export async function extractFrames(gif : File) : Promise<Frame[]> {
 
     // Convert
     const ffmpeg = await getFFmpeg();
-    ffmpeg.FS('writeFile', 'source.gif', await readFile(gif));
+    ffmpeg.FS('writeFile', 'source', await readFile(gif));
     await ffmpeg.run(
-        '-i', 'source.gif',
+        '-i', 'source',
         '-vsync', '0',
         '%d.png'
     );
@@ -33,8 +33,12 @@ export async function extractFrames(gif : File) : Promise<Frame[]> {
     // Get stuff
     const framePaths = ffmpeg.FS('readdir', '/').filter(f => f.endsWith('.png'));
     const frames = framePaths.map(path => { 
+        const data = ffmpeg.FS('readFile', path);
+        ffmpeg.FS('unlink', path);
+        
         const index = path.substring(path.lastIndexOf('/')+1, path.lastIndexOf('.png'));
-        return new Frame( +index, ffmpeg.FS('readFile', path));
+        const frame = new Frame( +index, data);
+        return frame;
     });
     frames.sort((a,b) => a.index - b.index);
 
