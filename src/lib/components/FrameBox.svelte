@@ -4,11 +4,8 @@
   import { onDestroy } from "svelte";
 
   export let frame: Frame;
-  let dataUrl: string;
   let selected: boolean = false;
   let altMode: boolean = false;
-
-  $: dataUrl = URL.createObjectURL(new Blob([frame.data]));
 
   onDestroy(
     selection.subscribe((s) => {
@@ -66,7 +63,7 @@
       Skip Frame
     </div>
   </div>
-  <img src={dataUrl} alt="frame" />
+  <img src={frame.objectUrl} alt="frame" />
 </div>
 
 <style>

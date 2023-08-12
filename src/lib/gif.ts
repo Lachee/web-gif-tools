@@ -8,10 +8,13 @@ export class Frame {
     data : Uint8Array;
     skip : boolean;
 
+    objectUrl : string;
+
     constructor(index : number, data : Uint8Array) {
         this.index = index;
         this.data = data;
         this.skip = false;
+        this.objectUrl = URL.createObjectURL(new Blob([data]));
     }
 };
 
